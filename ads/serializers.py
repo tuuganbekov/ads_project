@@ -44,3 +44,19 @@ class AdSerializer(ModelSerializer):
                 image=image
             )
         return ad
+    
+    def update(self, instance, validated_data):
+        request = self.context.get("request")
+        files = request.FILES.getlist("images")
+        for key, value in validated_data.items():
+            setattr(instance, key, value)
+        instance.save()
+
+        if files:
+            AdImage.objects.filter(ad=instance).delete()
+            for image in files:
+                AdImage.objects.create(
+                ad=instance,
+                image=image
+            )
+        return instance
