@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: ads
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  web:
+    build: .
+    command: bash entrypoint.sh
+    ports:
+      - "8000:8000"
+    environment:
+      SECRET_KEY: django-insecure-by)*db=@j8a_-2n^@7^7q#+zi13%zu83bj6dwxt=avh3wa1jr@
+      DEBUG: True
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+      POSTGRES_NAME: ads
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    depends_on:
+      - db
+volumes:
+  postgres_data:
